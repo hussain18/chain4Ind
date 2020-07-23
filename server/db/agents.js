@@ -33,6 +33,7 @@ const getPublicKey = getAttribute('publicKey')
 const getName = getAttribute('name')
 const getReporters = getAttribute('reporters')
 const getAuthorized = getAttribute('authorized')
+const getType = getAttribute('type')
 
 const hasPublicKey = key => obj => {
   return r.eq(
@@ -74,6 +75,7 @@ const listQuery = filterQuery => block => {
     .map(agent => r.expr({
       'name': getName(agent),
       'key': getPublicKey(agent),
+      'type': getType(agent),
       'owns': getTable('records', block)
         .filter(isRecordOwner(agent))
         .map(getRecordId)
@@ -92,7 +94,7 @@ const listQuery = filterQuery => block => {
 const fetchQuery = (publicKey, auth) => block => {
   return getTable('agents', block)
     .filter(hasPublicKey(publicKey))
-    .pluck('name', 'publicKey')
+    .pluck('name', 'publicKey', 'type')
     .nth(0)
     .do(
       agent => {

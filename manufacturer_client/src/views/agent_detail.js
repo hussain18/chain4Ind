@@ -94,7 +94,7 @@ const editIcon = (obj, key) => {
 
 // Edits a field in state
 const editField = (state, label, key, route) => {
-  const currentInfo = _.get(state, ['agent', key], '')
+  const currentInfo = _.get(state, ['agent', key], 'OOPs')
   const onSubmit = () => {
     return api.patch(route, _.pick(state.update, key))
       .then(() => { state.agent[key] = state.update[key] })
@@ -141,7 +141,8 @@ const AgentDetailPage = {
   },
 
   view (vnode) {
-    const publicKey = _.get(vnode.state, 'agent.publicKey', '')
+    const publicKey = _.get(vnode.state, 'agent.publicKey', 'OOPs')
+    const type = _.get(vnode.state, "agent.type", "OOPs")
 
     const profileContent = [
       layout.row(privateKeyField(vnode.state)),
@@ -163,6 +164,7 @@ const AgentDetailPage = {
       layout.title(_.get(vnode.state, 'agent.name', '')),
       m('.container',
         layout.row(staticField('Public Key', publicKey)),
+        layout.row(staticField('Agent Type', type)),
         publicKey === api.getPublicKey() ? profileContent : null)
     ]
   }
