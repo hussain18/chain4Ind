@@ -93,10 +93,10 @@ const editIcon = (obj, key) => {
 }
 
 // Edits a field in state
-const editField = (state, label, key) => {
+const editField = (state, label, key, route) => {
   const currentInfo = _.get(state, ['agent', key], '')
   const onSubmit = () => {
-    return api.patch('users', _.pick(state.update, key))
+    return api.patch(route, _.pick(state.update, key))
       .then(() => { state.agent[key] = state.update[key] })
   }
 
@@ -146,10 +146,17 @@ const AgentDetailPage = {
     const profileContent = [
       layout.row(privateKeyField(vnode.state)),
       layout.row([
-        editField(vnode.state, 'Username', 'username'),
+        editField(vnode.state, 'Username', 'username', 'users'),
         passwordField(vnode.state)
       ]),
-      layout.row(editField(vnode.state, 'Email', 'email'))
+      layout.row([
+        editField(vnode.state, 'Email', 'email', 'users'),
+        editField(vnode.state, 'Pincode', 'pincode', 'manufacturers')
+      ]),
+      layout.row([
+        editField(vnode.state, 'GST No.', 'gst_no', 'manufacturers'),
+        editField(vnode.state, 'Contact No.', 'contact_no', 'manufacturers')
+      ])
     ]
 
     return [
