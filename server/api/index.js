@@ -28,6 +28,7 @@ const records = require('./records')
 const blockchain = require('../blockchain/')
 const batcher = require('../blockchain/batcher')
 const config = require('../system/config')
+const manufacturers = require('./manufacturers')
 
 const router = express.Router()
 
@@ -211,15 +212,15 @@ router.patch('/certifiers/:publicKey', restrict, handleBody((body, params) => {
 }))
 
 router.route('/manufacturers')
-  .post(handleBody(users.create))
-  .patch(restrict, handleBody(users.update))
+  .post(handleBody(manufacturers.create))
+  .patch(restrict, handleBody(manufacturers.update))
 
 // This route is redundant, but matches RESTful expectations
 router.patch('/manufacturers/:publicKey', restrict, handleBody((body, params) => {
   if (params.publicKey !== params.authedKey) {
     throw new Unauthorized('You may only modify your own user account!')
   }
-  return users.update(body, params)
+  return manufacturers.update(body, params)
 }))
 
 
