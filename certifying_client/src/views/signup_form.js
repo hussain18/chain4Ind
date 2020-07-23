@@ -63,11 +63,13 @@ const passwordCard = state => {
 
 const userSubmitter = state => e => {
   e.preventDefault()
+  // Agent type automated to Certifier
+  state.type = "Certifier"
 
   const keys = transactions.makePrivateKey(state.password)
-  const user = _.assign(keys, _.pick(state, 'username', 'email'))
+  const user = _.assign(keys, _.pick(state, 'username', 'email', 'pincode', 'address'))
   user.password = api.hashPassword(state.password)
-  const agent = payloads.createAgent(_.pick(state, 'name'))
+  const agent = payloads.createAgent(_.pick(state, 'name', 'type'))
 
   transactions.submit(agent, true)
     .then(() => api.post('certifiers', user))
@@ -88,8 +90,8 @@ const SignupForm = {
       forms.textInput(setter('name'), 'Name'),
       forms.emailInput(setter('email'), 'Email'),
       forms.textInput(setter('username'), 'Username'),
-      forms.numberInput(setter('#'), "Pincode"),
-      forms.textInput(setter('#'), "Address"),
+      forms.numberInput(setter('pincode'), "Pincode"),
+      forms.textInput(setter('address'), "Address"),
       passwordCard(vnode.state),
       m('.container.text-center',
         'Or you can ',

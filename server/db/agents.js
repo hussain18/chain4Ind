@@ -99,10 +99,18 @@ const fetchQuery = (publicKey, auth) => block => {
     .do(
       agent => {
         return r.branch(
-          auth,
-          agent.merge(
-            manufacturers(publicKey)),
-          agent)
+          agent('type').eq('Manufacturer'),
+          r.branch(
+            auth,
+            agent.merge(
+              manufacturers(publicKey)),
+            agent),
+          r.branch(
+            auth,
+            agent.merge(
+              certifiers(publicKey)),
+            agent)
+        )
       })
 }
 
@@ -120,7 +128,16 @@ const fetchManufacturer = publicKey => {
     .nth(0)
 }
 
+const fetchCertifier = publicKey => {
+  return r.table('certifiers')
+    .filter(hasPublicKey(publicKey))
+    .pluck('pincode', 'address')
+    .nth(0)
+}
+
 const manufacturers = publicKey => fetchManufacturer(publicKey).merge(fetchUser(publicKey))
+
+const certifiers = publicKey => fetchCertifier(publicKey).merge(fetchUser(publicKey))
 
 const list = filterQuery => db.queryWithCurrentBlock(listQuery(filterQuery))
 
