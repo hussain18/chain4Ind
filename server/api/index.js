@@ -195,6 +195,34 @@ router.patch('/users/:publicKey', restrict, handleBody((body, params) => {
   return users.update(body, params)
 }))
 
+//============================================
+// Clients' routes
+//============================================
+router.route('/certifiers')
+  .post(handleBody(users.create))
+  .patch(restrict, handleBody(users.update))
+
+// This route is redundant, but matches RESTful expectations
+router.patch('/certifiers/:publicKey', restrict, handleBody((body, params) => {
+  if (params.publicKey !== params.authedKey) {
+    throw new Unauthorized('You may only modify your own user account!')
+  }
+  return users.update(body, params)
+}))
+
+router.route('/manufacturers')
+  .post(handleBody(users.create))
+  .patch(restrict, handleBody(users.update))
+
+// This route is redundant, but matches RESTful expectations
+router.patch('/manufacturers/:publicKey', restrict, handleBody((body, params) => {
+  if (params.publicKey !== params.authedKey) {
+    throw new Unauthorized('You may only modify your own user account!')
+  }
+  return users.update(body, params)
+}))
+
+
 router.use(errorHandler)
 const endpointInfo = getEndpoints(router)
 

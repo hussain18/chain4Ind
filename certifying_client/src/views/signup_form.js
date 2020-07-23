@@ -70,7 +70,7 @@ const userSubmitter = state => e => {
   const agent = payloads.createAgent(_.pick(state, 'name'))
 
   transactions.submit(agent, true)
-    .then(() => api.post('users', user))
+    .then(() => api.post('certifiers', user))
     .then(res => api.setAuth(res.authorization))
     .then(() => m.route.set('/'))
 }
@@ -84,7 +84,7 @@ const SignupForm = {
 
     return m('.signup-form', [
       m('form', { onsubmit: userSubmitter(vnode.state) },
-      m('legend', 'Create Agent'),
+      m('legend', 'Create Certifying Agent'),
       forms.textInput(setter('name'), 'Name'),
       forms.emailInput(setter('email'), 'Email'),
       forms.textInput(setter('username'), 'Username'),
